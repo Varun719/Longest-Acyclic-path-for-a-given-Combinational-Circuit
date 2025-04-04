@@ -1,0 +1,95 @@
+import csv
+import heapq
+
+def read_netlist(file_name):
+    edges = []
+    nodes = set()
+    
+    with open(file_name, newline='') as file:
+        reader = csv.reader(file)
+        next(reader)  # Skip header
+        for row in reader:
+            if row[2] == "nand":  # Only process NAND gates
+                source = int(row[0])  
+                fanin1 = int(row[5]) if row[5] else None
+                fanin2 = int(row[6]) if row[6] else None
+                delay = -1 * int(source)  # Multiply by -1 for longest path
+                
+                if fanin1:
+                    edges.append((fanin1, source, delay))
+                    nodes.add(fanin1)
+                    nodes.add(source)
+                if fanin2:
+                    edges.append((fanin2, source, delay))
+                    nodes.add(fanin2)
+                    nodes.add(source)
+
+    return edges, list(nodes)
+
+
+# Find the parent of a node (for Kruskal)
+def find_parent(parent, node):
+    if parent[node] == node:
+        return node
+    parent[node] = find_parent(parent, parent[node])
+    return parent[node]
+
+
+def kruskal(edges, nodes):
+    edges.sort(key=lambda x: x[2])  # Sort by weight (negative values for longest path)
+    
+    parent = {node: node for node in nodes}
+    mst = []
+    
+    for u, v, w in edges:
+        root_u = find_parent(parent, u)
+        root_v = find_parent(parent, v)
+        
+        if root_u != root_v:
+            mst.append((u, v, w))
+            parent[root_u] = root_v
+
+    return mst
+
+
+def prim(edges, nodes):
+    adj_list = {node: [] for node in nodes}
+    for u, v, w in edges:
+        adj_list[u].append((w, v))
+        adj_list[v].append((w, u))
+
+    start_node = nodes[0]  # Pick any starting node
+    visited = set()
+    mst = []
+    min_heap = [(0, start_node, -1)]  # (weight, node, parent)
+
+    while min_heap:
+        weight, node, parent = heapq.heappop(min_heap)
+
+        if node in visited:
+            continue
+        visited.add(node)
+        
+        if parent != -1:
+            mst.append((parent, node, weight))
+
+        for w, neighbor in adj_list[node]:
+            if neighbor not in visited:
+                heapq.heappush(min_heap, (w, neighbor, node))
+
+    return mst
+
+
+edges, nodes = read_netlist("netlist.csv")
+
+# Running Kruskal’s Algorithm
+print("Kruskal's Algorithm Output:")
+kruskal_output = kruskal(edges, nodes)
+for edge in kruskal_output:
+    print(edge)
+
+# Running Prim’s Algorithm
+print("\nPrim's Algorithm Output:")
+prims_output = prim(edges, nodes)
+for edge in prims_output:
+    print(edge)
