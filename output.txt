@@ -1,0 +1,4 @@
+Delay for O1: 7 ns
+Path for O1: I3 G2 G3 O1 
+Delay for O2: 8 ns
+Path for O2: I3 G2 G4 O2 
