@@ -1,2 +1,1 @@
-# Longest-Acyclic-path-for-a-given-Combinational-Circuit
-Finded out longest acyclic path for a given combinational circuit with help of Prims and Kruskal algorithms
+Implemented C-based critical-path analysis of a combinational circuit modeled as a weighted DAG using Bellman-Ford, DFS and topological sorting. Cross-validated the maximum path delay and identified the 8 ns critical path.
