@@ -1,1 +1,4 @@
-Implemented C-based critical-path analysis of a combinational circuit modeled as a weighted DAG using Bellman-Ford, DFS and topological sorting. Cross-validated the maximum path delay and identified the 8 ns critical path.
+Modeled combinational circuit as weighted directed acyclic graph and implemented Bellman-Ford, DFS
+and topological-sort based methods in C to find maximum path delay.
+Cross-validated independent algorithms on the same circuit netlist, consistently identifying 8 ns as
+critical path (I3→G2→G4→O2)
